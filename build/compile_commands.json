@@ -1,0 +1,32 @@
+[
+{
+  "directory": "D:/.c/boomclear/ZJU_Cpp_3D_boob/build",
+  "command": "G:/mingw-w64-v10.0.0/x86_64-8.1.0-release-posix-sjlj-rt_v6-rev0/mingw64/bin/g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles/main.dir/main.cpp.obj -c D:/.c/boomclear/ZJU_Cpp_3D_boob/main.cpp",
+  "file": "D:/.c/boomclear/ZJU_Cpp_3D_boob/main.cpp",
+  "output": "CMakeFiles/main.dir/main.cpp.obj"
+},
+{
+  "directory": "D:/.c/boomclear/ZJU_Cpp_3D_boob/build",
+  "command": "G:/mingw-w64-v10.0.0/x86_64-8.1.0-release-posix-sjlj-rt_v6-rev0/mingw64/bin/g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles/main.dir/src/boomclear/create.cpp.obj -c D:/.c/boomclear/ZJU_Cpp_3D_boob/src/boomclear/create.cpp",
+  "file": "D:/.c/boomclear/ZJU_Cpp_3D_boob/src/boomclear/create.cpp",
+  "output": "CMakeFiles/main.dir/src/boomclear/create.cpp.obj"
+},
+{
+  "directory": "D:/.c/boomclear/ZJU_Cpp_3D_boob/build",
+  "command": "G:/mingw-w64-v10.0.0/x86_64-8.1.0-release-posix-sjlj-rt_v6-rev0/mingw64/bin/g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles/main.dir/src/boomclear/event.cpp.obj -c D:/.c/boomclear/ZJU_Cpp_3D_boob/src/boomclear/event.cpp",
+  "file": "D:/.c/boomclear/ZJU_Cpp_3D_boob/src/boomclear/event.cpp",
+  "output": "CMakeFiles/main.dir/src/boomclear/event.cpp.obj"
+},
+{
+  "directory": "D:/.c/boomclear/ZJU_Cpp_3D_boob/build",
+  "command": "G:/mingw-w64-v10.0.0/x86_64-8.1.0-release-posix-sjlj-rt_v6-rev0/mingw64/bin/g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles/main.dir/src/boomclear/judge.cpp.obj -c D:/.c/boomclear/ZJU_Cpp_3D_boob/src/boomclear/judge.cpp",
+  "file": "D:/.c/boomclear/ZJU_Cpp_3D_boob/src/boomclear/judge.cpp",
+  "output": "CMakeFiles/main.dir/src/boomclear/judge.cpp.obj"
+},
+{
+  "directory": "D:/.c/boomclear/ZJU_Cpp_3D_boob/build",
+  "command": "G:/mingw-w64-v10.0.0/x86_64-8.1.0-release-posix-sjlj-rt_v6-rev0/mingw64/bin/g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles/main.dir/src/boomclear/view.cpp.obj -c D:/.c/boomclear/ZJU_Cpp_3D_boob/src/boomclear/view.cpp",
+  "file": "D:/.c/boomclear/ZJU_Cpp_3D_boob/src/boomclear/view.cpp",
+  "output": "CMakeFiles/main.dir/src/boomclear/view.cpp.obj"
+}
+]
