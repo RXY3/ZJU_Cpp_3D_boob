@@ -2,6 +2,9 @@
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
+#include <vector>
+#include <glm/glm.hpp>
+#include <GLFW/glfw3.h>
 
 /*
  * there are three arrays in total:
@@ -17,19 +20,17 @@ int BoomByMode[3] = {2, 10, 74};
  * Create a frontier with size*size*size
  * mode: 0 for 3*3*3, 1 for 5*5*5, 2 for 10*10*10
  */
-int ***initFrontier(int mode)
+std::vector<glm::vec4> initFrontier(int mode)
 {
     int size = SizeByMode[mode];
-    int ***frontier = new int **[size];
-    for (int i = 0; i < size; i++)
+    std::vector<glm::vec4> frontier;
+    for (int i = (-size) / 2; i < (size + 1) / 2; i++)
     {
-        frontier[i] = new int *[size];
-        for (int j = 0; j < size; j++)
+        for (int j = (-size) / 2; j < (size + 1) / 2; j++)
         {
-            frontier[i][j] = new int[size];
-            for (int k = 0; k < size; k++)
+            for (int k = (-size) / 2; k < (size + 1) / 2; k++)
             {
-                frontier[i][j][k] = 0;
+                frontier.push_back(glm::vec4(i, j, k, 0));
             }
         }
     }
@@ -41,124 +42,37 @@ int ***initFrontier(int mode)
  * 0 stands for unclicked, 1 stands for clicked
  * later we will draw the blocks according to the click status and the boom status
  */
-int ***initialClickArr(int mode)
+std::vector<bool> initialClickArr(int mode)
 {
     int size = SizeByMode[mode];
-    int ***clickArr = new int **[size];
-    for (int i = 0; i < size; i++)
+    std::vector<bool> clickArr;
+    for (int i = 0; i < size * size * size; i++)
     {
-        clickArr[i] = new int *[size];
-        for (int j = 0; j < size; j++)
-        {
-            clickArr[i][j] = new int[size];
-            for (int k = 0; k < size; k++)
-            {
-                clickArr[i][j][k] = 0;
-            }
-        }
+        clickArr.push_back(false);
     }
     return clickArr;
 }
-/*
- * Create a 3D array to store the left_bottom position of each block
- */
-double ***initPosition(double ***block_pos, int mode)
-{
-    int size = SizeByMode[mode];
-    block_pos = new double **[size];
-    for (int i = 0; i < size; i++)
-    {
-        block_pos[i] = new double *[size];
-        for (int j = 0; j < size; j++)
-        {
-            block_pos[i][j] = new double[size];
-            for (int k = 0; k < size; k++)
-            {
-                block_pos[i][j][k] = 0;
-            }
-        }
-    }
-    return block_pos;
-}
 
-void createBoom(int ***frontier, int mode)
+void createBoom(std::vector<glm::vec4> frontier, int mode)
 {
-    int size = SizeByMode[mode];
     int boomCount = BoomByMode[mode];
     srand(time(NULL));
-    while (boomCount > 0)
+    for (int i = 0; i < boomCount; i++)
     {
-        int i = rand() % size;
-        int j = rand() % size;
-        int k = rand() % size;
-        if (frontier[i][j][k] != -1)
-        {
-            frontier[i][j][k] = -1;
-            boomCount--;
-        }
+        int index = rand() % frontier.size();
+        if (!frontier[index].w)
+            frontier[index].w = 1;
+        else
+            i--;
     }
 }
 
-void printFrontier(int ***frontier, int mode)
+void destroyFrontier(std::vector<glm::vec4> frontier)
 {
-    int size = SizeByMode[mode];
-    for (int i = 0; i < size; i++)
-    {
-        std::cout << "layer: " << i << std::endl;
-        for (int j = 0; j < size; j++)
-        {
-            for (int k = 0; k < size; k++)
-                std::cout << frontier[i][j][k] << " ";
-            std::cout << std::endl;
-        }
-        std::cout << std::endl;
-    }
+    frontier.clear();
 }
 
-void destroyFrontier(int ***frontier, int mode)
+void destroyClickArr(std::vector<bool> clickArr)
 {
-    if (frontier == NULL)
-        return;
-    int size = SizeByMode[mode];
-    for (int i = 0; i < size; i++)
-    {
-        for (int j = 0; j < size; j++)
-        {
-            delete[] frontier[i][j];
-        }
-        delete[] frontier[i];
-    }
-    delete[] frontier;
-}
-
-void destroyClickArr(int ***clickArr, int mode)
-{
-    if (clickArr == NULL)
-        return;
-    int size = SizeByMode[mode];
-    for (int i = 0; i < size; i++)
-    {
-        for (int j = 0; j < size; j++)
-        {
-            delete[] clickArr[i][j];
-        }
-        delete[] clickArr[i];
-    }
-    delete[] clickArr;
-}
-
-void destroyPosition(double ***block_pos, int mode)
-{
-    if (block_pos == NULL)
-        return;
-    int size = SizeByMode[mode];
-    for (int i = 0; i < size; i++)
-    {
-        for (int j = 0; j < size; j++)
-        {
-            delete[] block_pos[i][j];
-        }
-        delete[] block_pos[i];
-    }
-    delete[] block_pos;
+    clickArr.clear();
 }

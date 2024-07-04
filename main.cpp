@@ -6,9 +6,9 @@
 int main()
 {
     int mode = 0;
-    int ***frontier = initFrontier(mode);
+    std::vector<glm::vec4> frontier = initFrontier(mode);
+    std::vector<bool> clickArr = initialClickArr(mode);
     createBoom(frontier, mode);
-    printFrontier(frontier, mode);
     test();
     test2();
     return 0;

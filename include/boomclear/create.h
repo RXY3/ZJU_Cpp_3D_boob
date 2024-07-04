@@ -4,13 +4,14 @@
 extern int SizeByMode[3];
 extern int BoomByMode[3];
 
-int ***initFrontier(int mode);
-int ***initialClickArr(int mode);
-double ***initPosition(double ***block_pos, int mode);
-void createBoom(int ***frontier, int mode);
-void printFrontier(int ***frontier, int mode);
-void destroyFrontier(int ***frontier, int mode);
-void destroyClickArr(int ***clickArr, int mode);
-void destroyPosition(double ***block_pos, int mode);
+#include <vector>
+#include <glm/glm.hpp>
+#include <iostream>
+
+std::vector<glm::vec4> initFrontier(int mode);
+std::vector<bool> initialClickArr(int mode);
+void createBoom(std::vector<glm::vec4> frontier, int mode);
+void destroyFrontier(std::vector<glm::vec4> frontier);
+void destroyClickArr(std::vector<bool> clickArr);
 
 #endif
