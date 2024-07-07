@@ -50,7 +50,7 @@ void initFrontier()
  * 0 stands for unclicked, 1 stands for clicked
  * later we will draw the blocks according to the click status and the boom status
  */
-void createBoom(std::vector<Block> frontier, int mode)
+void createBoom(int mode)
 {
     int boomCount = BoomByMode[mode];
     srand(time(NULL));

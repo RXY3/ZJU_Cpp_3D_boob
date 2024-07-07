@@ -74,12 +74,17 @@ public:
     {
         boomCount++;
     }
+
+    void boomCountMinus()
+    {
+        boomCount--;
+    }
 };
 
 extern std::vector<Block> frontier;
 
 void initFrontier();
-void createBoom(std::vector<Block> frontier, int mode);
+void createBoom(int mode);
 inline float absFloat(float x);
 
 #endif
