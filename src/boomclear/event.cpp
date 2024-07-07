@@ -2,6 +2,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
 #include <boomclear/view.h>
+#include <boomclear/create.h>
 #include <iostream>
 
 /*
@@ -40,7 +41,7 @@ void update_camera_direction()
 /*
  * return the mouse position in world coordinates when the left mouse button is clicked
  */
-void mouse_button_callback(GLFWwindow *window, int button, int action, int mods, double *click_pos_3d)
+void mouse_button_callback(GLFWwindow *window, int button, int action, int mods, Block *click_pos)
 {
         if (button == GLFW_MOUSE_BUTTON_LEFT)
         {
@@ -76,10 +77,7 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods,
                                 glm::vec3 ray_wor = glm::vec3(glm::inverse(view) * ray_eye);
                                 ray_wor = glm::normalize(ray_wor);
 
-                                click_pos_3d[0] = ray_wor.x;
-                                click_pos_3d[1] = ray_wor.y;
-                                click_pos_3d[2] = ray_wor.z;
-                                std::cout << ray_wor.x << " " << ray_wor.y << " " << ray_wor.z << std::endl;
+                                click_pos->setPosition(ray_wor);
                         }
                 }
         }

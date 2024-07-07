@@ -5,8 +5,10 @@
 #include <glm/glm.hpp>
 #include <iostream>
 
+extern int mode;
 extern int SizeByMode[3];
 extern int BoomByMode[3];
+extern float BlockLength[3];
 
 class Block
 {
@@ -17,6 +19,8 @@ private:
     bool is_Clicked;
 
 public:
+    Block() {}
+
     Block(glm::vec3 pos, bool boom = false, int count = 0, bool clicked = false)
     {
         position = pos;
@@ -25,6 +29,11 @@ public:
         is_Clicked = clicked;
     }
     ~Block() {}
+
+    void setPosition(glm::vec3 pos)
+    {
+        position = pos;
+    }
 
     glm::vec3 getPosition()
     {
@@ -60,9 +69,17 @@ public:
     {
         is_Clicked = clicked;
     }
+
+    void boomCountPlus()
+    {
+        boomCount++;
+    }
 };
 
-std::vector<Block> initFrontier(int mode);
+extern std::vector<Block> frontier;
+
+void initFrontier();
 void createBoom(std::vector<Block> frontier, int mode);
+inline float absFloat(float x);
 
 #endif
