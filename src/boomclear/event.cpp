@@ -1,7 +1,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
-#include <boomclear/view.h>
+#include <boomclear/texture.h>
 #include <boomclear/create.h>
 #include <iostream>
 
@@ -141,14 +141,14 @@ void cursor_position_callback(GLFWwindow *window, double xpos, double ypos)
                 float sensitivity = 0.1f;
 
                 // 更新水平角度
-                angle += xoffset * sensitivity;
+                angle -= xoffset * sensitivity;
                 // 限制角度范围在360度内
                 if (angle > 360.0f)
                         angle -= 360.0f;
                 if (angle < 0.0f)
                         angle += 360.0f;
                 // 更新垂直角度，限制范围在90度以内
-                pitch += yoffset * sensitivity;
+                pitch -= yoffset * sensitivity;
                 if (pitch > 89.0f)
                         pitch = 89.0f;
                 if (pitch < -89.0f)
@@ -170,8 +170,6 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
         radius -= yoffset * 0.1f; // 根据滚轮的y偏移量调整radius，可以根据需要调整缩放速度
         if (radius < 1.0f)
                 radius = 1.0f; // 确保radius不小于最小值，可以根据需要调整最小值
-
-        std::cout << radius << std::endl;
 
         update_camera_direction(); // 更新相机位置和视角
 }
