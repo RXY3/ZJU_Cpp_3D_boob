@@ -7,19 +7,21 @@
 #include <boomclear/view.h>
 #include <boomclear/event.h>
 #include <boomclear/judge.h>
+#include <boomclear/create.h>
+#include <boomclear/texture.h>
 
 /*
  *stay these parameters here
  */
 
 // 窗口尺寸
-int SCREEN_WIDTH = 800;
-int SCREEN_HEIGHT = 600;
+// int SCREEN_WIDTH = 800;
+// int SCREEN_HEIGHT = 600;
 
-// 相机参数
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);                               // 相机位置
-glm::vec3 objectPos = glm::vec3(0.0f, 0.0f, 0.0f);                               // 物体位置，假设为中心点
-glm::mat4 view = glm::lookAt(cameraPos, objectPos, glm::vec3(0.0f, 1.0f, 0.0f)); // 视图矩阵，初始时相机看向物体中心
+// // 相机参数
+// glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);                               // 相机位置
+// glm::vec3 objectPos = glm::vec3(0.0f, 0.0f, 0.0f);                               // 物体位置，假设为中心点
+// glm::mat4 view = glm::lookAt(cameraPos, objectPos, glm::vec3(0.0f, 1.0f, 0.0f)); // 视图矩阵，初始时相机看向物体中心
 
 int closestVertexIndex = -1;//最近的顶点索引
 glm::vec3 closestVertex;//最近的顶点
@@ -29,79 +31,9 @@ int closestCenterIndex = -1;
 // 假设 CenTerses 是存储所有立方体中心点的数组
 glm::vec3 closestCenter;
 
-// Vertex Shader
-const char *vertexShaderSource = R"(
-#version 330 core
-layout(location = 0) in vec3 aPos;
 
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
 
-void main()
-{
-    gl_Position = projection * view * model * vec4(aPos, 1.0);
-}
-)";
 
-// Fragment Shader
-const char *fragmentShaderSource = R"(
-#version 330 core
-out vec4 FragColor;
-
-uniform int renderMode; // 0: Solid color, 1: Wireframe
-
-void main()
-{
-    if (renderMode == 0)
-        FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f); // Orange color for faces
-    else
-        FragColor = vec4(0.0f, 0.0f, 0.0f, 1.0f); // Black color for wireframe
-}
-)";
-
-float vertices[] = {
-    -0.5f, -0.5f, -0.5f,
-    0.5f, -0.5f, -0.5f,
-    0.5f, 0.5f, -0.5f,
-    0.5f, 0.5f, -0.5f,
-    -0.5f, 0.5f, -0.5f,
-    -0.5f, -0.5f, -0.5f,
-
-    -0.5f, -0.5f, 0.5f,
-    0.5f, -0.5f, 0.5f,
-    0.5f, 0.5f, 0.5f,
-    0.5f, 0.5f, 0.5f,
-    -0.5f, 0.5f, 0.5f,
-    -0.5f, -0.5f, 0.5f,
-
-    -0.5f, 0.5f, 0.5f,
-    -0.5f, 0.5f, -0.5f,
-    -0.5f, -0.5f, -0.5f,
-    -0.5f, -0.5f, -0.5f,
-    -0.5f, -0.5f, 0.5f,
-    -0.5f, 0.5f, 0.5f,
-
-    0.5f, 0.5f, 0.5f,
-    0.5f, 0.5f, -0.5f,
-    0.5f, -0.5f, -0.5f,
-    0.5f, -0.5f, -0.5f,
-    0.5f, -0.5f, 0.5f,
-    0.5f, 0.5f, 0.5f,
-
-    -0.5f, -0.5f, -0.5f,
-    0.5f, -0.5f, -0.5f,
-    0.5f, -0.5f, 0.5f,
-    0.5f, -0.5f, 0.5f,
-    -0.5f, -0.5f, 0.5f,
-    -0.5f, -0.5f, -0.5f,
-
-    -0.5f, 0.5f, -0.5f,
-    0.5f, 0.5f, -0.5f,
-    0.5f, 0.5f, 0.5f,
-    0.5f, 0.5f, 0.5f,
-    -0.5f, 0.5f, 0.5f,
-    -0.5f, 0.5f, -0.5f};
 
 struct AABB {
     glm::vec3 min;
@@ -192,205 +124,205 @@ glm::vec3 findClosestCube(GLFWwindow* window, glm::mat4 view, glm::mat4 projecti
     
 }
 
-void processInput(GLFWwindow *window)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-}
+// void processInput(GLFWwindow *window)
+// {
+//     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+//         glfwSetWindowShouldClose(window, true);
+// }
 
-void test()
-{
-    // Initialize GLFW
-    if (!glfwInit())
-    {
-        std::cerr << "Failed to initialize GLFW" << std::endl;
-        return;
-    }
+// void test()
+// {
+//     // Initialize GLFW
+//     if (!glfwInit())
+//     {
+//         std::cerr << "Failed to initialize GLFW" << std::endl;
+//         return;
+//     }
 
-    // Create a GLFW window
-    GLFWwindow *window = glfwCreateWindow(2000, 1500, "Rotating Cube", NULL, NULL);
-    if (!window)
-    {
-        std::cerr << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return;
-    }
+//     // Create a GLFW window
+//     GLFWwindow *window = glfwCreateWindow(2000, 1500, "Rotating Cube", NULL, NULL);
+//     if (!window)
+//     {
+//         std::cerr << "Failed to create GLFW window" << std::endl;
+//         glfwTerminate();
+//         return;
+//     }
 
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, [](GLFWwindow *window, int width, int height)
-                                   { glViewport(0, 0, width, height); });
-    glfwSetMouseButtonCallback(window, resultLeft);
-    glfwSetCursorPosCallback(window, cursor_position_callback);
-    glfwSetScrollCallback(window, scroll_callback);
+//     glfwMakeContextCurrent(window);
+//     glfwSetFramebufferSizeCallback(window, [](GLFWwindow *window, int width, int height)
+//                                    { glViewport(0, 0, width, height); });
+//     glfwSetMouseButtonCallback(window, resultLeft);
+//     glfwSetCursorPosCallback(window, cursor_position_callback);
+//     glfwSetScrollCallback(window, scroll_callback);
 
-    // Initialize GLAD
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cerr << "Failed to initialize GLAD" << std::endl;
-        return;
-    }
+//     // Initialize GLAD
+//     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+//     {
+//         std::cerr << "Failed to initialize GLAD" << std::endl;
+//         return;
+//     }
 
-    // Build and compile shaders
-    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
+//     // Build and compile shaders
+//     unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+//     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+//     glCompileShader(vertexShader);
 
-    int success;
-    char infoLog[512];
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
-                  << infoLog << std::endl;
-    }
+//     int success;
+//     char infoLog[512];
+//     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+//     if (!success)
+//     {
+//         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+//         std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
+//                   << infoLog << std::endl;
+//     }
 
-    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
+//     unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+//     glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+//     glCompileShader(fragmentShader);
 
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        std::cerr << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"
-                  << infoLog << std::endl;
-    }
+//     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+//     if (!success)
+//     {
+//         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+//         std::cerr << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"
+//                   << infoLog << std::endl;
+//     }
 
-    unsigned int shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
+//     unsigned int shaderProgram = glCreateProgram();
+//     glAttachShader(shaderProgram, vertexShader);
+//     glAttachShader(shaderProgram, fragmentShader);
+//     glLinkProgram(shaderProgram);
 
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success)
-    {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        std::cerr << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
-                  << infoLog << std::endl;
-    }
+//     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+//     if (!success)
+//     {
+//         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+//         std::cerr << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
+//                   << infoLog << std::endl;
+//     }
 
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+//     glDeleteShader(vertexShader);
+//     glDeleteShader(fragmentShader);
 
-    // Set up vertex data and buffers
-    unsigned int VBO, VAO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
+//     // Set up vertex data and buffers
+//     unsigned int VBO, VAO;
+//     glGenVertexArrays(1, &VAO);
+//     glGenBuffers(1, &VBO);
 
-    glBindVertexArray(VAO);
+//     glBindVertexArray(VAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+//     glBindBuffer(GL_ARRAY_BUFFER, VBO);
+//     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-    glEnableVertexAttribArray(0);
+//     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+//     glEnableVertexAttribArray(0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+//     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    glBindVertexArray(0);
+//     glBindVertexArray(0);
 
-    // Initialize camera and object position
-    glm::vec3 objectPos = glm::vec3(0.0f, 0.0f, 0.0f); // Center of the object
-    float radius = 3.0f;                               // Radius of the orbit
-    float angle = 0.0f;                                // Initial angle for rotation
+//     // Initialize camera and object position
+//     glm::vec3 objectPos = glm::vec3(0.0f, 0.0f, 0.0f); // Center of the object
+//     float radius = 3.0f;                               // Radius of the orbit
+//     float angle = 0.0f;                                // Initial angle for rotation
 
-    for(int i=0;i<CenTerses.size();++i)
-        {
-            aabb[i].min = CenTerses[i] - glm::vec3(0.5f, 0.5f, 0.5f);
-            aabb[i].max = CenTerses[i] + glm::vec3(0.5f, 0.5f, 0.5f);
-        }
+//     for(int i=0;i<CenTerses.size();++i)
+//         {
+//             aabb[i].min = CenTerses[i] - glm::vec3(0.5f, 0.5f, 0.5f);
+//             aabb[i].max = CenTerses[i] + glm::vec3(0.5f, 0.5f, 0.5f);
+//         }
 
-    // Render loop
-    while (!glfwWindowShouldClose(window))
-    {
-        // Input
-        processInput(window);
+//     // Render loop
+//     while (!glfwWindowShouldClose(window))
+//     {
+//         // Input
+//         processInput(window);
 
-        // Update camera position and view matrix
-        update_camera_direction();
+//         // Update camera position and view matrix
+//         update_camera_direction();
 
 
-        // Render
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//         // Render
+//         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+//         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Activate shader
-        glUseProgram(shaderProgram);
+//         // Activate shader
+//         glUseProgram(shaderProgram);
 
-        // Transformation matrices
-        glm::mat4 model = glm::mat4(1.0f);
-        // model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+//         // Transformation matrices
+//         glm::mat4 model = glm::mat4(1.0f);
+//         // model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
+//         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
-        unsigned int modelLoc = glGetUniformLocation(shaderProgram, "model");
-        unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
-        unsigned int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
+//         unsigned int modelLoc = glGetUniformLocation(shaderProgram, "model");
+//         unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
+//         unsigned int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
 
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+//         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+//         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+//         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-        // Render the cube
-        glBindVertexArray(VAO);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);                         // Render faces as filled polygons
-        glUniform1i(glGetUniformLocation(shaderProgram, "renderMode"), 0); // Set render mode to faces
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+//         // Render the cube
+//         glBindVertexArray(VAO);
+//         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);                         // Render faces as filled polygons
+//         glUniform1i(glGetUniformLocation(shaderProgram, "renderMode"), 0); // Set render mode to faces
+//         glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        // Render wireframe
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);                         // Render only the lines
-        glUniform1i(glGetUniformLocation(shaderProgram, "renderMode"), 1); // Set render mode to wireframe
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+//         // Render wireframe
+//         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);                         // Render only the lines
+//         glUniform1i(glGetUniformLocation(shaderProgram, "renderMode"), 1); // Set render mode to wireframe
+//         glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        //find the closest cube
-        findClosestCube(window, view, glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f), CenTerses, closestCenter);
+//         //find the closest cube
+//         findClosestCube(window, view, glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f), CenTerses, closestCenter);
 
-        // Swap buffers and poll IO events
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+//         // Swap buffers and poll IO events
+//         glfwSwapBuffers(window);
+//         glfwPollEvents();
 
-        // Update angle for next frame
-        angle += 0.5f;
-    }
+//         // Update angle for next frame
+//         angle += 0.5f;
+//     }
 
-    // Clean up
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
+//     // Clean up
+//     glDeleteVertexArrays(1, &VAO);
+//     glDeleteBuffers(1, &VBO);
 
-    glfwTerminate();
-}
+//     glfwTerminate();
+// }
 
-int test2()
-{
-    if (!glfwInit())
-    {
-        std::cerr << "Failed to initialize GLFW" << std::endl;
-        return -1;
-    }
+// int test2()
+// {
+//     if (!glfwInit())
+//     {
+//         std::cerr << "Failed to initialize GLFW" << std::endl;
+//         return -1;
+//     }
 
-    GLFWwindow *window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Mouse Click to World Coordinates", nullptr, nullptr);
-    if (!window)
-    {
-        std::cerr << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
+//     GLFWwindow *window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Mouse Click to World Coordinates", nullptr, nullptr);
+//     if (!window)
+//     {
+//         std::cerr << "Failed to create GLFW window" << std::endl;
+//         glfwTerminate();
+//         return -1;
+//     }
 
-    glfwMakeContextCurrent(window);
+//     glfwMakeContextCurrent(window);
 
-    // 设置鼠标回调函数
-    glfwSetMouseButtonCallback(window, resultLeft);
-    glfwSetCursorPosCallback(window, cursor_position_callback);
+//     // 设置鼠标回调函数
+//     glfwSetMouseButtonCallback(window, resultLeft);
+//     glfwSetCursorPosCallback(window, cursor_position_callback);
 
-    while (!glfwWindowShouldClose(window))
-    {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//     while (!glfwWindowShouldClose(window))
+//     {
+//         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
+//         glfwSwapBuffers(window);
+//         glfwPollEvents();
+//     }
 
-    glfwDestroyWindow(window);
-    glfwTerminate();
-    return 0;
-}
+//     glfwDestroyWindow(window);
+//     glfwTerminate();
+//     return 0;
+// }
