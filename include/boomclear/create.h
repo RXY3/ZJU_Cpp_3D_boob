@@ -1,9 +1,10 @@
 #ifndef _CREATE_H_
 #define _CREATE_H_
 
+#include <iostream>
+
 #include <vector>
 #include <glm/glm.hpp>
-#include <iostream>
 
 extern int mode;
 extern int SizeByMode[3];

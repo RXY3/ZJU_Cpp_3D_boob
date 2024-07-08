@@ -1,11 +1,13 @@
-#include <boomclear/create.h>
 #include <iostream>
+
 #include <ctime>
 #include <cstdlib>
 #include <vector>
+
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 
+#include <boomclear/create.h>
 /*
  * there are three arrays in total:
  * 1. Frontier: a 3D array to store the boom status of each block
@@ -32,7 +34,7 @@ void initFrontier()
         {
             for (int k = 0; k < size; k++)
             {
-                frontier.push_back(Block(glm::vec3(float(i - (size / 2)), float(j - (size / 2)), float(k - (size / 2))), false, 0, false));
+                frontier.push_back(Block(glm::vec3(float(i), float(j), float(k)), false, 0, false));
             }
         }
     }

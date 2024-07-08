@@ -1,9 +1,11 @@
-#include <boomclear/judge.h>
-#include <GLFW/glfw3.h>
-#include <boomclear/event.h>
-#include <boomclear/create.h>
-#include <glm/glm.hpp>
 #include <iostream>
+
+#include <glm/glm.hpp>
+#include <GLFW/glfw3.h>
+
+#include <boomclear/create.h>
+#include <boomclear/event.h>
+#include <boomclear/judge.h>
 
 std::vector<Block> zeroCount;
 
