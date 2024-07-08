@@ -5,8 +5,10 @@
 
 int main()
 {
-    int mode = 0;
-    test();
-    test2();
-    return 0;
+    mode = 0;
+    initFrontier();
+    for (auto &it : frontier)
+    {
+        std::cout << it.getPosition().x << " " << it.getPosition().y << " " << it.getPosition().z << std::endl;
+    }
 }

@@ -6,6 +6,7 @@
 
 void bfsBoomZero(Block &click_pos);
 void boomClear(Block &boom_pos);
+void boomDel();
 void resultLeft(GLFWwindow *window, int button, int action, int mods);
 void resultRight(GLFWwindow *window, int button, int action, int mods);
 

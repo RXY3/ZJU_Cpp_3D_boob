@@ -17,12 +17,6 @@ std::vector<Block> frontier;
 int mode;
 int SizeByMode[3] = {3, 5, 10};
 int BoomByMode[3] = {2, 10, 74};
-float BlockLength[3] = {0.6, 0.4, 0.1};
-
-inline float absFloat(float x)
-{
-    return x > 0 ? x : -x;
-}
 
 /*
  * Create a frontier with size*size*size
@@ -32,14 +26,13 @@ inline float absFloat(float x)
 void initFrontier()
 {
     int size = SizeByMode[mode];
-    int length = BlockLength[mode];
     for (int i = 0; i < size; i++)
     {
         for (int j = 0; j < size; j++)
         {
             for (int k = 0; k < size; k++)
             {
-                frontier.push_back(Block(glm::vec3(i * length + length / 2 - 1, j * length + length / 2 - 1, k * length + length / 2 - 1), false, 0, false));
+                frontier.push_back(Block(glm::vec3(float(i - (size / 2)), float(j - (size / 2)), float(k - (size / 2))), false, 0, false));
             }
         }
     }
@@ -61,18 +54,16 @@ void createBoom(int mode)
         {
             frontier[index].setIsBoom(true);
             frontier[index].setBoomCount(200); // MAX_COUNT
-            int origin_x = frontier[index].getPosition().x;
-            int origin_y = frontier[index].getPosition().y;
-            int origin_z = frontier[index].getPosition().z;
+            int x1 = frontier[index].getPosition().x;
+            int y1 = frontier[index].getPosition().y;
+            int z1 = frontier[index].getPosition().z;
             for (auto &it : frontier)
             {
 
                 int x = it.getPosition().x;
                 int y = it.getPosition().y;
                 int z = it.getPosition().z;
-                if ((x == origin_x || absFloat(x - origin_x) == BlockLength[mode]) &&
-                    (y == origin_y || absFloat(y - origin_y) == BlockLength[mode]) &&
-                    (z == origin_z || absFloat(z - origin_z) == BlockLength[mode]))
+                if (absFloat(x1 - x) <= 1 && absFloat(y1 - y) <= 1 && absFloat(z1 - z) <= 1)
                     it.boomCountPlus();
             }
         }

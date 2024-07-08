@@ -24,9 +24,7 @@ void bfsBoomZero(Block &click_pos) // delete all the Blocks whose boomcount == 0
             int y1 = it->getPosition().y;
             int z1 = it->getPosition().z;
 
-            if ((x1 == x || absFloat(x1 - x) == BlockLength[mode]) &&
-                (y1 == y || absFloat(y1 - y) == BlockLength[mode]) &&
-                (z1 == z || absFloat(z1 - z) == BlockLength[mode]))
+            if (absFloat(x1 - x) <= 1 && absFloat(y1 - y) <= 1 && absFloat(z1 - z) <= 1)
             {
                 if (it->getBoomCount() == 0)
                 {
@@ -58,9 +56,10 @@ void boomClear(Block &boom_pos)
     float z = boom_pos.getPosition().z;
     for (auto &it : frontier)
     {
-        if ((it.getPosition().x == x || absFloat(it.getPosition().x - x) == BlockLength[mode]) &&
-            (it.getPosition().y == y || absFloat(it.getPosition().y - y) == BlockLength[mode]) &&
-            (it.getPosition().z == z || absFloat(it.getPosition().z - z) == BlockLength[mode]))
+        float x1 = it.getPosition().x;
+        float y1 = it.getPosition().y;
+        float z1 = it.getPosition().z;
+        if (absFloat(x1 - x) <= 1 && absFloat(y1 - y) <= 1 && absFloat(z1 - z) <= 1)
         {
             it.boomCountMinus();
         }
@@ -68,7 +67,7 @@ void boomClear(Block &boom_pos)
     bfsBoomZero(boom_pos);
 }
 
-bool boomDel()
+void boomDel()
 {
     for (auto it = frontier.begin(); it != frontier.end();)
     {
@@ -86,9 +85,7 @@ bool boomDel()
                 int y1 = neighbor.getPosition().y;
                 int z1 = neighbor.getPosition().z;
 
-                if ((absFloat(x1 - x) == BlockLength[mode] || x1 == x) &&
-                    (absFloat(y1 - y) == BlockLength[mode] || y1 == y) &&
-                    (absFloat(z1 - z) == BlockLength[mode] || z1 == z))
+                if (absFloat(x1 - x) <= 1 && absFloat(y1 - y) <= 1 && absFloat(z1 - z) <= 1)
                 {
                     if (!neighbor.getIsClicked() && !neighbor.getIsBoom())
                     {

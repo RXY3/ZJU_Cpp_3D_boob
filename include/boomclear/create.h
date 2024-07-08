@@ -8,7 +8,6 @@
 extern int mode;
 extern int SizeByMode[3];
 extern int BoomByMode[3];
-extern float BlockLength[3];
 
 class Block
 {
@@ -85,6 +84,9 @@ extern std::vector<Block> frontier;
 
 void initFrontier();
 void createBoom(int mode);
-inline float absFloat(float x);
+inline int absFloat(float x)
+{
+    return x > 0 ? int(x) : int(-x);
+}
 
 #endif
