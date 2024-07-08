@@ -1,3 +1,0 @@
-C:/Users/whp/Desktop/code/cpp/ZJU_Cpp_3D_boob/build/CMakeFiles/main.dir
-C:/Users/whp/Desktop/code/cpp/ZJU_Cpp_3D_boob/build/CMakeFiles/edit_cache.dir
-C:/Users/whp/Desktop/code/cpp/ZJU_Cpp_3D_boob/build/CMakeFiles/rebuild_cache.dir

@@ -9,6 +9,10 @@ extern int SCREEN_HEIGHT;
 extern glm::vec3 cameraPos;
 extern glm::vec3 objectPos;
 extern glm::mat4 view;
+extern std::vector<glm::vec3> CenTerses;
+/*
+TODO: Initialize the Center of each block
+*/
 
 /*
 TODO: Draw the blocks according to the mode of the game
