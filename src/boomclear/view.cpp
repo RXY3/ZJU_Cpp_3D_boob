@@ -32,15 +32,16 @@ int closestCenterIndex = -1;
 glm::vec3 closestCenter;
 
 
-
-
-
 struct AABB {
     glm::vec3 min;
     glm::vec3 max;
 };
  
-AABB aabb[100];
+
+glm::vec3 getClosestCenter()
+{
+    return closestCenter;
+}
 
 // 用于检测射线与 AABB 相交
 glm::vec3 intersectRayAABB(const glm::vec3& rayOrigin, const glm::vec3& rayDir, const AABB& aabb) {
@@ -89,7 +90,7 @@ glm::vec3 screenToWorldCoords(double xpos, double ypos, int width, int height, g
     return ray_wor;
 }
 //用于检测射线与立方体相交，返回交点
-glm::vec3 findClosestCube(GLFWwindow* window, glm::mat4 view, glm::mat4 projection, std::vector<glm::vec3>& CenTerses, glm::vec3& closestCenter)
+glm::vec3 findClosestCube(GLFWwindow* window, glm::mat4 view, glm::mat4 projection, std::vector<glm::vec3>& CenTerses)
 {
     double xpos, ypos;//获取鼠标水平和垂直位置
     glfwGetCursorPos(window, &xpos, &ypos);
@@ -106,9 +107,11 @@ glm::vec3 findClosestCube(GLFWwindow* window, glm::mat4 view, glm::mat4 projecti
     glm::vec3 rayOrigin = cameraPos; // 射线原点是相机位置
     glm::vec3 rayDirection = glm::normalize(ray_wor); // 标准化射线方向   
 
+    
     for(int i=0;i<CenTerses.size();++i)
     {
-        glm::vec3 mouse = intersectRayAABB(rayOrigin, rayDirection, aabb[i]);//射线与AABB相交，得到第一个交点
+        AABB aabb = AABB{CenTerses[i] - glm::vec3(0.5f, 0.5f, 0.5f), CenTerses[i] + glm::vec3(0.5f, 0.5f, 0.5f)};//初始化AABB
+        glm::vec3 mouse = intersectRayAABB(rayOrigin, rayDirection, aabb);//射线与AABB相交，得到第一个交点
         if(mouse==glm::vec3(-1.0f))//没有交点，跳过
             continue;
         float dist = glm::length(mouse - rayOrigin);//计算射线原点到交点的距离，选取最近的
@@ -120,7 +123,6 @@ glm::vec3 findClosestCube(GLFWwindow* window, glm::mat4 view, glm::mat4 projecti
             mousePoint = mouse;//更新鼠标点
         }
     }
-    return closestCenter;
     
 }
 

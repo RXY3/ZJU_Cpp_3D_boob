@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <boomclear/create.h>
 
+
 void bfsBoomZero(Block &click_pos);
 void boomClear(Block &boom_pos);
 void boomDel();

@@ -6,6 +6,7 @@
 #include <boomclear/create.h>
 #include <boomclear/event.h>
 #include <boomclear/judge.h>
+#include <boomclear/view.h>
 
 std::vector<Block> zeroCount;
 
@@ -120,7 +121,10 @@ void resultLeft(GLFWwindow *window, int button, int action, int mods)
     {
         Block click_pos;
         mouse_button_callback_left(window, button, action, mods, &click_pos);
-        // std::cout << click_pos.getPosition().x << " " << click_pos.getPosition().y << " " << click_pos.getPosition().z << std::endl;
+        std::cout << click_pos.getPosition().x << " " << click_pos.getPosition().y << " " << click_pos.getPosition().z << std::endl;
+        
+        //glm::vec3 clickPosClosestCenetr = getClosestCenter();
+        //std::cout << clickPosClosestCenetr.x << " " << clickPosClosestCenetr.y << " " << clickPosClosestCenetr.z << std::endl;
         for (auto it = frontier.begin(); it != frontier.end(); ++it)
         {
             if (it->getPosition() == click_pos.getPosition())
@@ -157,6 +161,8 @@ void resultRight(GLFWwindow *window, int button, int action, int mods)
     {
         Block click_pos;
         mouse_button_callback_right(window, button, action, mods, &click_pos);
+        glm::vec3 clickPosClosestCenetr = getClosestCenter();
+        
         for (auto it = frontier.begin(); it != frontier.end();)
         {
             if (it->getPosition() == click_pos.getPosition())

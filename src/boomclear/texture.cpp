@@ -12,6 +12,7 @@
 #include <boomclear/judge.h>
 #include <boomclear/texture.h>
 
+
 // 顶点着色器
 const char *vertexShaderSource = R"(
 #version 330 core
@@ -95,7 +96,7 @@ int SCREEN_HEIGHT = 600;
 
 // 相机参数
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);                               // 相机位置
-glm::vec3 objectPos = glm::vec3(0.0f, 0.0f, 0.0f);                               // 物体位置，假设为中心点
+glm::vec3 objectPos = glm::vec3(1.0f, 1.0f, 1.0f);                               // 物体位置，假设为中心点
 glm::mat4 view = glm::lookAt(cameraPos, objectPos, glm::vec3(0.0f, 1.0f, 0.0f)); // 视图矩阵，初始时相机看向物体中心
 
 void processInput(GLFWwindow *window)
@@ -167,7 +168,7 @@ void renderCubes(int numCubes, std::vector<int> &drawFlags, std::vector<int> &te
     glfwSetMouseButtonCallback(window, resultLeft);
     glfwSetCursorPosCallback(window, cursor_position_callback);
     glfwSetScrollCallback(window, scroll_callback);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
     // Initialize GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -244,10 +245,24 @@ void renderCubes(int numCubes, std::vector<int> &drawFlags, std::vector<int> &te
     float angle = 0.0f;                                // Initial angle for rotation
 
     // Load and create textures
-    unsigned int texture1 = loadTexture("../texture/1.jpg");
-    unsigned int texture2 = loadTexture("../texture/2.jpg");
+    unsigned int texture1 = loadTexture("../texture_display/1.jpg");
+    unsigned int texture2 = loadTexture("../texture_display/2.jpg");
 
     std::vector<unsigned int> textures = {texture1, texture2};
+
+    //cube大小为numCubes的立方根
+    int cubeSize = static_cast<int>(cbrt(numCubes));
+    std::vector<glm::vec3> CenTerses;
+        for (int x = 0; x < cubeSize; ++x)
+        {
+            for (int y = 0; y < cubeSize; ++y)
+            {
+                for (int z = 0; z < cubeSize; ++z)
+                {
+                    CenTerses.push_back(glm::vec3(x, y, z));
+                }
+            }
+        }
 
     // Enable depth test
     glEnable(GL_DEPTH_TEST);
@@ -281,6 +296,8 @@ void renderCubes(int numCubes, std::vector<int> &drawFlags, std::vector<int> &te
 
         glBindVertexArray(VAO);
 
+        findClosestCube(window, view, projection, CenTerses);
+        // std::cout << tmp.x << " " << tmp.y << " " << tmp.z << std::endl;
         int n = static_cast<int>(cbrt(numCubes)); // Calculate the dimension size of the cube grid
         for (int x = 0; x < n; ++x)
         {
