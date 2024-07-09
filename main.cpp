@@ -1,9 +1,9 @@
 #include <iostream>
 
-#include <boomclear/create.h>
-#include <boomclear/event.h>
-#include <boomclear/view.h>
-#include <boomclear/texture.h>
+#include <module/create.h>
+#include <view_module/event.h>
+#include <view/view.h>
+#include <view/texture.h>
 #include <windows.h>
 
 int main()
@@ -12,7 +12,7 @@ int main()
     initFrontier();
     for (auto &it : frontier)
     {
-        std::cout << it.getPosition().x << " " << it.getPosition().y << " " << it.getPosition().z << std::endl;
+        std::cout << it.getX() << " " << it.getY() << " " << it.getZ() << std::endl;
     }
     int numCubes = 27; // 3x3x3 cubes
     std::vector<int> drawFlags = {

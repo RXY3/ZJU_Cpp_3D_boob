@@ -2,9 +2,7 @@
 #define _CREATE_H_
 
 #include <iostream>
-
 #include <vector>
-#include <glm/glm.hpp>
 
 extern int mode;
 extern int SizeByMode[3];
@@ -13,7 +11,7 @@ extern int BoomByMode[3];
 class Block
 {
 private:
-    glm::vec3 position;
+    int x, y, z;
     bool isBoom;
     int boomCount;
     bool is_Clicked;
@@ -21,23 +19,46 @@ private:
 public:
     Block() {}
 
-    Block(glm::vec3 pos, bool boom = false, int count = 0, bool clicked = false)
+    Block(int pos_x, int pos_y, int pos_z, bool boom = false, int count = 0, bool clicked = false)
     {
-        position = pos;
+        x = pos_x;
+        y = pos_y;
+        z = pos_z;
         isBoom = boom;
         boomCount = count;
         is_Clicked = clicked;
     }
     ~Block() {}
 
-    void setPosition(glm::vec3 pos)
+    void setPosition(int pos_x, int pos_y, int pos_z)
     {
-        position = pos;
+        x = pos_x;
+        y = pos_y;
+        z = pos_z;
     }
-
-    glm::vec3 getPosition()
+    void setX(int pos_x)
     {
-        return position;
+        x = pos_x;
+    }
+    void setY(int pos_y)
+    {
+        y = pos_y;
+    }
+    void setZ(int pos_z)
+    {
+        z = pos_z;
+    }
+    int getX()
+    {
+        return x;
+    }
+    int getY()
+    {
+        return y;
+    }
+    int getZ()
+    {
+        return z;
     }
 
     bool getIsBoom()
@@ -85,9 +106,5 @@ extern std::vector<Block> frontier;
 
 void initFrontier();
 void createBoom(int mode);
-inline int absFloat(float x)
-{
-    return x > 0 ? int(x) : int(-x);
-}
 
 #endif

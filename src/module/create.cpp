@@ -1,13 +1,9 @@
 #include <iostream>
 
 #include <ctime>
-#include <cstdlib>
 #include <vector>
 
-#include <glm/glm.hpp>
-#include <GLFW/glfw3.h>
-
-#include <boomclear/create.h>
+#include <module/create.h>
 /*
  * there are three arrays in total:
  * 1. Frontier: a 3D array to store the boom status of each block
@@ -34,7 +30,7 @@ void initFrontier()
         {
             for (int k = 0; k < size; k++)
             {
-                frontier.push_back(Block(glm::vec3(float(i), float(j), float(k)), false, 0, false));
+                frontier.push_back(Block(i, j, k, false, 0, false));
             }
         }
     }
@@ -56,16 +52,16 @@ void createBoom(int mode)
         {
             frontier[index].setIsBoom(true);
             frontier[index].setBoomCount(200); // MAX_COUNT
-            int x1 = frontier[index].getPosition().x;
-            int y1 = frontier[index].getPosition().y;
-            int z1 = frontier[index].getPosition().z;
+            int x1 = frontier[index].getX();
+            int y1 = frontier[index].getY();
+            int z1 = frontier[index].getZ();
             for (auto &it : frontier)
             {
 
-                int x = it.getPosition().x;
-                int y = it.getPosition().y;
-                int z = it.getPosition().z;
-                if (absFloat(x1 - x) <= 1 && absFloat(y1 - y) <= 1 && absFloat(z1 - z) <= 1)
+                int x = it.getX();
+                int y = it.getY();
+                int z = it.getZ();
+                if (abs(x1 - x) <= 1 && abs(y1 - y) <= 1 && abs(z1 - z) <= 1)
                     it.boomCountPlus();
             }
         }

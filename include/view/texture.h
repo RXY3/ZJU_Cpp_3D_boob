@@ -1,7 +1,9 @@
 #ifndef _TEXTURE_H_
 #define _TEXTURE_H_
 
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <vector>
 
 extern const char *vertexShaderSource;
 extern const char *fragmentShaderSource;

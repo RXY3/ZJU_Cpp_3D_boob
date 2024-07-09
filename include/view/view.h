@@ -2,6 +2,8 @@
 #define _VIEW_H_
 
 #include <glm/glm.hpp>
+#include <GLFW/glfw3.h>
+#include <module/create.h>
 
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
@@ -18,7 +20,7 @@ TODO: Initialize the Center of each block
 TODO: Draw the blocks according to the mode of the game
         and the click status and the boom status.
 */
-glm::vec3 findClosestCube(GLFWwindow* window, glm::mat4 view, glm::mat4 projection, std::vector<glm::vec3>& CenTerses);
-glm::vec3 getClosestCenter();
+void findClosestCube(GLFWwindow *window, glm::mat4 view, glm::mat4 projection, std::vector<glm::vec3> &CenTerses);
+void getClosestCenter(Block &click_pos);
 
 #endif

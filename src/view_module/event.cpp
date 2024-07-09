@@ -1,9 +1,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
-#include <boomclear/texture.h>
-#include <boomclear/create.h>
-#include <boomclear/view.h>
+#include <view/texture.h>
+#include <module/create.h>
+#include <view/view.h>
+#include <module/judge.h>
 #include <iostream>
 
 /*
@@ -42,7 +43,7 @@ void update_camera_direction()
 /*
  * return the mouse position in world coordinates when the left mouse button is clicked
  */
-void mouse_button_callback_left(GLFWwindow *window, int button, int action, int mods, Block *click_pos)
+void mouse_button_callback_left(GLFWwindow *window, int button, int action, int mods)
 {
         if (button == GLFW_MOUSE_BUTTON_LEFT)
         {
@@ -57,35 +58,17 @@ void mouse_button_callback_left(GLFWwindow *window, int button, int action, int 
                         mouse_button_pressed = false;
                         if (!mouse_dragging)
                         {
-                                // double xpos, ypos;
-                                // glfwGetCursorPos(window, &xpos, &ypos);
-
-                                // // 将屏幕坐标转换为归一化设备坐标
-                                // float x = (2.0f * xpos) / SCREEN_WIDTH - 1.0f;
-                                // float y = 1.0f - (2.0f * ypos) / SCREEN_HEIGHT;
-                                // float z = 1.0f;
-
-                                // glm::vec3 ray_nds = glm::vec3(x, y, z);
-
-                                // // 从归一化设备坐标转换到齐次裁剪坐标
-                                // glm::vec4 ray_clip = glm::vec4(ray_nds, 1.0f);
-
-                                // // 从齐次裁剪坐标转换到相机坐标
-                                // glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
-                                // ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0f, 0.0f);
-
-                                // // 从相机坐标转换到世界坐标
-                                // glm::vec3 ray_wor = glm::vec3(glm::inverse(view) * ray_eye);
-                                // ray_wor = glm::normalize(ray_wor);
-
-                                // click_pos->setPosition(ray_wor);
-                                click_pos->setPosition(getClosestCenter());
+                                Block click_pos(0, 0, 0, false, 0, false);
+                                getClosestCenter(click_pos);
+                                bool judge_close = resultLeft(click_pos);
+                                if (judge_close)
+                                        glfwSetWindowShouldClose(window, GLFW_TRUE);
                         }
                 }
         }
 }
 
-void mouse_button_callback_right(GLFWwindow *window, int button, int action, int mods, Block *click_pos)
+void mouse_button_callback_right(GLFWwindow *window, int button, int action, int mods)
 {
         if (button == GLFW_MOUSE_BUTTON_RIGHT)
         {
@@ -100,29 +83,11 @@ void mouse_button_callback_right(GLFWwindow *window, int button, int action, int
                         mouse_button_pressed = false;
                         if (!mouse_dragging)
                         {
-                                // double xpos, ypos;
-                                // glfwGetCursorPos(window, &xpos, &ypos);
-
-                                // // 将屏幕坐标转换为归一化设备坐标
-                                // float x = (2.0f * xpos) / SCREEN_WIDTH - 1.0f;
-                                // float y = 1.0f - (2.0f * ypos) / SCREEN_HEIGHT;
-                                // float z = 1.0f;
-
-                                // glm::vec3 ray_nds = glm::vec3(x, y, z);
-
-                                // // 从归一化设备坐标转换到齐次裁剪坐标
-                                // glm::vec4 ray_clip = glm::vec4(ray_nds, 1.0f);
-
-                                // // 从齐次裁剪坐标转换到相机坐标
-                                // glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
-                                // ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0f, 0.0f);
-
-                                // // 从相机坐标转换到世界坐标
-                                // glm::vec3 ray_wor = glm::vec3(glm::inverse(view) * ray_eye);
-                                // ray_wor = glm::normalize(ray_wor);
-
-                                // click_pos->setPosition(ray_wor);
-                                click_pos->setPosition(getClosestCenter());
+                                Block click_pos(0, 0, 0, false, 0, false);
+                                getClosestCenter(click_pos);
+                                bool judge_close = resultRight(click_pos);
+                                if (judge_close)
+                                        glfwSetWindowShouldClose(window, GLFW_TRUE);
                         }
                 }
         }

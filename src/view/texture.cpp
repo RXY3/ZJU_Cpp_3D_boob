@@ -7,11 +7,10 @@
 #include <stb_image.h>
 #include <iostream>
 #include <vector>
-#include <boomclear/event.h>
-#include <boomclear/view.h>
-#include <boomclear/judge.h>
-#include <boomclear/texture.h>
-
+#include <view_module/event.h>
+#include <view/view.h>
+#include <module/judge.h>
+#include <view/texture.h>
 
 // 顶点着色器
 const char *vertexShaderSource = R"(
@@ -165,7 +164,7 @@ void renderCubes(int numCubes, std::vector<int> &drawFlags, std::vector<int> &te
                                    { glViewport(0, 0, width, height); });
 
     // Register mouse callbacks
-    glfwSetMouseButtonCallback(window, resultLeft);
+    glfwSetMouseButtonCallback(window, mouse_button_callback_left);
     glfwSetCursorPosCallback(window, cursor_position_callback);
     glfwSetScrollCallback(window, scroll_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -250,19 +249,19 @@ void renderCubes(int numCubes, std::vector<int> &drawFlags, std::vector<int> &te
 
     std::vector<unsigned int> textures = {texture1, texture2};
 
-    //cube大小为numCubes的立方根
+    // cube大小为numCubes的立方根
     int cubeSize = static_cast<int>(cbrt(numCubes));
     std::vector<glm::vec3> CenTerses;
-        for (int x = 0; x < cubeSize; ++x)
+    for (int x = 0; x < cubeSize; ++x)
+    {
+        for (int y = 0; y < cubeSize; ++y)
         {
-            for (int y = 0; y < cubeSize; ++y)
+            for (int z = 0; z < cubeSize; ++z)
             {
-                for (int z = 0; z < cubeSize; ++z)
-                {
-                    CenTerses.push_back(glm::vec3(x, y, z));
-                }
+                CenTerses.push_back(glm::vec3(x, y, z));
             }
         }
+    }
 
     // Enable depth test
     glEnable(GL_DEPTH_TEST);
