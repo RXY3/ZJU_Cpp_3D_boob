@@ -5,10 +5,6 @@
 #include <glm/glm.hpp>
 #include <vector>
 
-extern const char *vertexShaderSource;
-extern const char *fragmentShaderSource;
-extern float vertices[];
-
 extern glm::vec3 cameraPos;
 extern glm::vec3 objectPos;
 extern glm::mat4 view;
