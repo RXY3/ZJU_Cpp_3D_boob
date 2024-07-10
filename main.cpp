@@ -16,7 +16,7 @@ int main()
     }
     int numCubes = 27; // 3x3x3 cubes
     std::vector<int> drawFlags = {
-        1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 0, 0, 0, 1, 1, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 1}; // All cubes drawn
 
