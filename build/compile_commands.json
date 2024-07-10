@@ -1,0 +1,38 @@
+[
+{
+  "directory": "C:/Users/22436/Desktop/3/build",
+  "command": "C:\\Mingw\\mingw64\\bin\\g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\main.dir\\main.cpp.obj -c C:\\Users\\22436\\Desktop\\3\\main.cpp",
+  "file": "C:/Users/22436/Desktop/3/main.cpp",
+  "output": "CMakeFiles/main.dir/main.cpp.obj"
+},
+{
+  "directory": "C:/Users/22436/Desktop/3/build",
+  "command": "C:\\Mingw\\mingw64\\bin\\g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\main.dir\\src\\module\\create.cpp.obj -c C:\\Users\\22436\\Desktop\\3\\src\\module\\create.cpp",
+  "file": "C:/Users/22436/Desktop/3/src/module/create.cpp",
+  "output": "CMakeFiles/main.dir/src/module/create.cpp.obj"
+},
+{
+  "directory": "C:/Users/22436/Desktop/3/build",
+  "command": "C:\\Mingw\\mingw64\\bin\\g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\main.dir\\src\\module\\judge.cpp.obj -c C:\\Users\\22436\\Desktop\\3\\src\\module\\judge.cpp",
+  "file": "C:/Users/22436/Desktop/3/src/module/judge.cpp",
+  "output": "CMakeFiles/main.dir/src/module/judge.cpp.obj"
+},
+{
+  "directory": "C:/Users/22436/Desktop/3/build",
+  "command": "C:\\Mingw\\mingw64\\bin\\g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\main.dir\\src\\view\\texture.cpp.obj -c C:\\Users\\22436\\Desktop\\3\\src\\view\\texture.cpp",
+  "file": "C:/Users/22436/Desktop/3/src/view/texture.cpp",
+  "output": "CMakeFiles/main.dir/src/view/texture.cpp.obj"
+},
+{
+  "directory": "C:/Users/22436/Desktop/3/build",
+  "command": "C:\\Mingw\\mingw64\\bin\\g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\main.dir\\src\\view\\view.cpp.obj -c C:\\Users\\22436\\Desktop\\3\\src\\view\\view.cpp",
+  "file": "C:/Users/22436/Desktop/3/src/view/view.cpp",
+  "output": "CMakeFiles/main.dir/src/view/view.cpp.obj"
+},
+{
+  "directory": "C:/Users/22436/Desktop/3/build",
+  "command": "C:\\Mingw\\mingw64\\bin\\g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\main.dir\\src\\view_module\\event.cpp.obj -c C:\\Users\\22436\\Desktop\\3\\src\\view_module\\event.cpp",
+  "file": "C:/Users/22436/Desktop/3/src/view_module/event.cpp",
+  "output": "CMakeFiles/main.dir/src/view_module/event.cpp.obj"
+}
+]
