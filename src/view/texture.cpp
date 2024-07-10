@@ -89,10 +89,6 @@ float vertices[] = {
     -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f};
 
-// 窗口尺寸
-int SCREEN_WIDTH = 800;
-int SCREEN_HEIGHT = 600;
-
 // 相机参数
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);                               // 相机位置
 glm::vec3 objectPos = glm::vec3(1.0f, 1.0f, 1.0f);                               // 物体位置，假设为中心点

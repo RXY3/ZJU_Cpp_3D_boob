@@ -5,9 +5,6 @@
 #include <GLFW/glfw3.h>
 #include <module/create.h>
 
-extern int SCREEN_WIDTH;
-extern int SCREEN_HEIGHT;
-
 extern glm::vec3 cameraPos;
 extern glm::vec3 objectPos;
 extern glm::mat4 view;

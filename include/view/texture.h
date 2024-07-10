@@ -9,9 +9,6 @@ extern const char *vertexShaderSource;
 extern const char *fragmentShaderSource;
 extern float vertices[];
 
-extern int SCREEN_WIDTH;
-extern int SCREEN_HEIGHT;
-
 extern glm::vec3 cameraPos;
 extern glm::vec3 objectPos;
 extern glm::mat4 view;

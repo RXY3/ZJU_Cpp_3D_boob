@@ -5,6 +5,9 @@
 #include <glm/glm.hpp>
 #include <module/create.h>
 
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
+
 void update_camera_direction();
 void mouse_button_callback_left(GLFWwindow *window, int button, int action, int mods);
 void mouse_button_callback_right(GLFWwindow *window, int button, int action, int mods);

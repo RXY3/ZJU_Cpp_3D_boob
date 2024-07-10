@@ -4,6 +4,7 @@
 #include <view/texture.h>
 #include <module/create.h>
 #include <view/view.h>
+#include <view_module/event.h>
 #include <module/judge.h>
 #include <iostream>
 
