@@ -244,10 +244,11 @@ void renderCubes(int numCubes, std::vector<int> &drawFlags, std::vector<int> &te
     float angle = 0.0f;                                // Initial angle for rotation
 
     // Load and create textures
+    unsigned int texture0 = loadTexture("../texture_src/0.jpg");
     unsigned int texture1 = loadTexture("../texture_src/1.jpg");
     unsigned int texture2 = loadTexture("../texture_src/2.jpg");
 
-    std::vector<unsigned int> textures = {texture1, texture2};
+    std::vector<unsigned int> textures = {texture0, texture1, texture2};
 
     // cube大小为numCubes的立方根
     int cubeSize = static_cast<int>(cbrt(numCubes));

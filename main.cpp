@@ -23,7 +23,7 @@ int main()
     std::vector<int> textureCodes = {
         0, 0, 0, 0, 0, 0, 0, 0, 0,
         1, 1, 1, 1, 1, 1, 1, 1, 1,
-        0, 0, 0, 0, 0, 0, 0, 0, 0}; // Alternating textures
+        2, 2, 2, 2, 2, 2, 2, 2, 2}; // Alternating textures
 
     renderCubes(numCubes, drawFlags, textureCodes);
 
