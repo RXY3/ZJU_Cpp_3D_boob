@@ -5,7 +5,7 @@
 
 std::vector<Block> zeroCount;
 
-void bfsBoomZero(Block &click_pos) // delete all the Blocks whose boomcount == 0 and near click_pos from frontier
+void bfsBoomZero(Block &click_pos, std::vector<Block> &frontier) // bfs to clear all the zero boom count blocks
 {
     zeroCount.push_back(click_pos);
     while (!zeroCount.empty())
@@ -47,7 +47,7 @@ void bfsBoomZero(Block &click_pos) // delete all the Blocks whose boomcount == 0
     return;
 }
 
-void boomClear(Block &boom_pos)
+void boomClear(Block &boom_pos, std::vector<Block> &frontier) // delete all the Blocks near boom_pos from frontier
 {
     int x = boom_pos.getX();
     int y = boom_pos.getY();
@@ -62,11 +62,15 @@ void boomClear(Block &boom_pos)
             it.boomCountMinus();
         }
     }
-    bfsBoomZero(boom_pos);
+    bfsBoomZero(boom_pos, frontier);
 }
 
-void boomDel()
+void boomDel(std::vector<Block> &frontier)
 {
+    if (frontier.empty())
+    {
+        return;
+    }
     for (auto it = frontier.begin(); it != frontier.end();)
     {
         if (it->getIsBoom())
@@ -95,13 +99,18 @@ void boomDel()
 
             if (!hasUnclickedNonBoom)
             {
-                boomClear(*it);
-                it = frontier.erase(it); // 如果没有未点击的非boom块，删除当前boom块
+                Block temp = *it;
+                it = frontier.erase(it); // 删除元素并更新迭代器
+                boomClear(temp, frontier);
+                boomDel(frontier);
             }
             else
             {
                 ++it; // 如果找到了未点击的非boom块，继续查找下一个boom块
             }
+
+            if (frontier.empty())
+                break;
         }
         else
         {
@@ -110,12 +119,8 @@ void boomDel()
     }
 }
 
-bool resultLeft(Block &click_pos)
+bool resultLeft(Block &click_pos, std::vector<Block> &frontier)
 {
-    std::cout << click_pos.getX() << " " << click_pos.getY() << " " << click_pos.getZ() << std::endl;
-
-    // glm::vec3 clickPosClosestCenetr = getClosestCenter();
-    // std::cout << clickPosClosestCenetr.x << " " << clickPosClosestCenetr.y << " " << clickPosClosestCenetr.z << std::endl;
     for (auto it = frontier.begin(); it != frontier.end(); ++it)
     {
         if (it->getX() == click_pos.getX() && it->getY() == click_pos.getY() && it->getZ() == click_pos.getZ())
@@ -132,11 +137,12 @@ bool resultLeft(Block &click_pos)
                 {
                     Block temp = *it;        // 复制要删除的块
                     it = frontier.erase(it); // 删除块
-                    bfsBoomZero(temp);       // 使用复制的块调用 bfsBoomZero
+                    bfsBoomZero(temp, frontier);
+                    boomDel(frontier);
                 }
                 else
                 {
-                    ++it; // 增加迭代器
+                    boomDel(frontier);
                 }
             }
             break; // 一旦找到并处理目标块，跳出循环
@@ -145,17 +151,20 @@ bool resultLeft(Block &click_pos)
     return false;
 }
 
-bool resultRight(Block &click_pos)
+bool resultRight(Block &click_pos, std::vector<Block> &frontier)
 {
     for (auto it = frontier.begin(); it != frontier.end();)
     {
         if (it->getX() == click_pos.getX() && it->getY() == click_pos.getY() && it->getZ() == click_pos.getZ())
         {
-            it->setIsClicked(true);
             if (it->getIsBoom())
             {
-                boomClear(*it);
+                it->setIsClicked(true);
+                Block temp = *it;
                 it = frontier.erase(it); // 删除元素并更新迭代器
+                boomClear(temp, frontier);
+                boomDel(frontier);
+                break;
             }
             else
             {

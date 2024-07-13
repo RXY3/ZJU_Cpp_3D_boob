@@ -4,9 +4,6 @@
 #include <iostream>
 #include <vector>
 
-extern int mode;
-extern int SizeByMode[3];
-extern int BoomByMode[3];
 
 class Block
 {
@@ -102,9 +99,8 @@ public:
     }
 };
 
-extern std::vector<Block> frontier;
 
-void initFrontier();
-void createBoom(int mode);
+void initFrontier(int mode, std::vector<Block> &frontier);
+void createBoom(int mode, std::vector<Block> &frontier);
 
 #endif

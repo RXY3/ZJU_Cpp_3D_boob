@@ -1,9 +1,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
-#include <view/texture.h>
 #include <module/create.h>
-#include <view/view.h>
 #include <view_module/event.h>
 #include <module/judge.h>
 #include <iostream>
@@ -13,132 +11,118 @@
         right click to stand a flag
  */
 
-float radius = 3.0f; // 相机到物体的距离，假设为3个单位
-float angle = 0.0f;  // 初始角度
-float pitch = 0.0f;  // 初始俯仰角度
+int closestVertexIndex = -1; // 最近的顶点索引
+glm::vec3 closestVertex;     // 最近的顶点
+glm::vec3 mousePoint;        // 鼠标点
 
-// 投影矩阵
-glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
+int closestCenterIndex = -1;
+// 假设 CenTerses 是存储所有立方体中心点的数组
+glm::vec3 closestCenter;
 
-// 鼠标按键状态
-bool mouse_button_pressed = false;
-
-// 鼠标拖动标志位
-bool mouse_dragging = false;
-
-// 上一次鼠标位置
-double last_xpos, last_ypos;
-
-// 更新相机方向
-void update_camera_direction()
+struct AABB
 {
-        // 根据角度更新相机位置
-        cameraPos.x = objectPos.x + radius * sin(glm::radians(angle)) * cos(glm::radians(pitch));
-        cameraPos.y = objectPos.y + radius * sin(glm::radians(pitch));
-        cameraPos.z = objectPos.z + radius * cos(glm::radians(angle)) * cos(glm::radians(pitch));
+       glm::vec3 min;
+       glm::vec3 max;
+};
 
-        // 更新视图矩阵，相机始终看向物体中心
-        view = glm::lookAt(cameraPos, objectPos, glm::vec3(0.0f, 1.0f, 0.0f));
+// 用于检测射线与 AABB 相交
+glm::vec3 intersectRayAABB(const glm::vec3 &rayOrigin, const glm::vec3 &rayDir, const AABB &aabb)
+{
+       float tMin = (aabb.min.x - rayOrigin.x) / rayDir.x;
+       float tMax = (aabb.max.x - rayOrigin.x) / rayDir.x;
+       if (tMin > tMax)
+              std::swap(tMin, tMax);
+
+       float t1 = (aabb.min.y - rayOrigin.y) / rayDir.y;
+       float t2 = (aabb.max.y - rayOrigin.y) / rayDir.y;
+       if (t1 > t2)
+              std::swap(t1, t2);
+
+       if ((tMin > t2) || (tMax < t1))
+              return glm::vec3(-1.0f); // 射线与 AABB 无交点
+
+       float t3 = (aabb.min.z - rayOrigin.z) / rayDir.z;
+       float t4 = (aabb.max.z - rayOrigin.z) / rayDir.z;
+       if (t3 > t4)
+              std::swap(t3, t4);
+
+       float tNear = std::max(t1, std::max(tMin, t3));
+       float tFar = std::min(t2, std::min(tMax, t4));
+
+       if (tNear < tFar && tNear >= 0)
+       {
+              // 计算交点
+              glm::vec3 intersectionPoint = rayOrigin + rayDir * tNear;
+              return intersectionPoint;
+       }
+       else
+       {
+              // 没有有效的交点
+              return glm::vec3(-1.0f);
+       }
 }
 
-/*
- * return the mouse position in world coordinates when the left mouse button is clicked
- */
-void mouse_button_callback_left(GLFWwindow *window, int button, int action, int mods)
+glm::vec3 screenToWorldCoords(double xpos, double ypos, int width, int height, glm::mat4 view, glm::mat4 projection)
 {
-        if (button == GLFW_MOUSE_BUTTON_LEFT)
-        {
-                if (action == GLFW_PRESS)
-                {
-                        mouse_button_pressed = true;
-                        mouse_dragging = false;
-                        glfwGetCursorPos(window, &last_xpos, &last_ypos);
-                }
-                else if (action == GLFW_RELEASE)
-                {
-                        mouse_button_pressed = false;
-                        if (!mouse_dragging)
-                        {
-                                Block click_pos(0, 0, 0, false, 0, false);
-                                getClosestCenter(click_pos);
-                                bool judge_close = resultLeft(click_pos);
-                                if (judge_close)
-                                        glfwSetWindowShouldClose(window, GLFW_TRUE);
-                        }
-                }
-        }
+       float x = (2.0f * xpos) / width - 1.0f;
+       float y = 1.0f - (2.0f * ypos) / height;
+       float z = 1.0f;
+       glm::vec3 ray_nds = glm::vec3(x, y, z); // 归一化设备坐标
+
+       glm::vec4 ray_clip = glm::vec4(ray_nds, 1.0); // 齐次裁剪坐标
+
+       glm::vec4 ray_eye = glm::inverse(projection) * ray_clip; // 视图坐标
+       ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0, 0.0);    // 齐次裁剪坐标
+
+       glm::vec3 ray_wor = glm::vec3(glm::inverse(view) * ray_eye); // 世界坐标
+       ray_wor = glm::normalize(ray_wor);                           // 标准化
+
+       return ray_wor;
 }
-
-void mouse_button_callback_right(GLFWwindow *window, int button, int action, int mods)
+// 用于检测射线与立方体相交，返回交点
+void ViewModel::findClosestCube(glm::mat4 view, std::vector<int> &drawFlags)
 {
-        if (button == GLFW_MOUSE_BUTTON_RIGHT)
-        {
-                if (action == GLFW_PRESS)
-                {
-                        mouse_button_pressed = true;
-                        mouse_dragging = false;
-                        glfwGetCursorPos(window, &last_xpos, &last_ypos);
-                }
-                else if (action == GLFW_RELEASE)
-                {
-                        mouse_button_pressed = false;
-                        if (!mouse_dragging)
-                        {
-                                Block click_pos(0, 0, 0, false, 0, false);
-                                getClosestCenter(click_pos);
-                                bool judge_close = resultRight(click_pos);
-                                if (judge_close)
-                                        glfwSetWindowShouldClose(window, GLFW_TRUE);
-                        }
-                }
-        }
-}
-/*
- *drag
- */
-void cursor_position_callback(GLFWwindow *window, double xpos, double ypos)
-{
-        if (mouse_button_pressed)
-        {
-                mouse_dragging = true;
+       double xpos, ypos; // 获取鼠标水平和垂直位置
+       xpos = xPos;
+       ypos = yPos;
+       // 投影矩阵
+       glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)800 / (float)600, 0.1f, 100.0f);
 
-                // 计算鼠标偏移量
-                double xoffset = xpos - last_xpos;
-                double yoffset = last_ypos - ypos; // 注意这里与之前的正负相反，因为y坐标从下到上增加
+       int width = 800, height = 600;
 
-                // 设置灵敏度
-                float sensitivity = 0.1f;
+       // 将屏幕坐标转换为世界坐标
+       glm::vec3 ray_wor = screenToWorldCoords(xpos, ypos, width, height, view, projection);
 
-                // 更新水平角度
-                angle -= xoffset * sensitivity;
-                // 限制角度范围在360度内
-                if (angle > 360.0f)
-                        angle -= 360.0f;
-                if (angle < 0.0f)
-                        angle += 360.0f;
-                // 更新垂直角度，限制范围在90度以内
-                pitch -= yoffset * sensitivity;
-                if (pitch > 89.0f)
-                        pitch = 89.0f;
-                if (pitch < -89.0f)
-                        pitch = -89.0f;
+       float minDist = std::numeric_limits<float>::max(); // 最小距离初始化为无穷大
+       closestCenter = glm::vec3(-1.0f);                  // 初始化为-1向量
+       closestCenterIndex = -1;
 
-                // 更新相机方向
-                update_camera_direction();
+       glm::vec3 rayOrigin = cameraPos;                  // 射线原点是相机位置
+       glm::vec3 rayDirection = glm::normalize(ray_wor); // 标准化射线方向
 
-                // 更新上一次的鼠标位置
-                last_xpos = xpos;
-                last_ypos = ypos;
-        }
-}
-/*
- *use scroll to change the radius
- */
-void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
-{
-        radius -= yoffset * 0.1f; // 根据滚轮的y偏移量调整radius，可以根据需要调整缩放速度
-        if (radius < 1.0f)
-                radius = 1.0f; // 确保radius不小于最小值，可以根据需要调整最小值
+       for (int i = 0; i < CenTerses.size(); ++i)
+       {
+              if (drawFlags[i] == 0)
+              {
+                     continue; // 跳过那些没有绘制的立方体
+              }
 
-        update_camera_direction(); // 更新相机位置和视角
+              AABB aabb = AABB{CenTerses[i] - glm::vec3(0.5f, 0.5f, 0.5f), CenTerses[i] + glm::vec3(0.5f, 0.5f, 0.5f)}; // 初始化AABB
+              glm::vec3 mouse = intersectRayAABB(rayOrigin, rayDirection, aabb);                                        // 射线与AABB相交，得到第一个交点
+              if (mouse == glm::vec3(-1.0f))                                                                            // 没有交点，跳过
+                     continue;
+              float dist = glm::length(mouse - rayOrigin); // 计算射线原点到交点的距离，选取最近的
+              if (dist < minDist)
+              {
+                     minDist = dist;               // 更新最小距离
+                     closestCenter = CenTerses[i]; // 更新最近的立方体中心点
+                     closestCenterIndex = i;       // 更新最近的立方体中心点索引
+                     mousePoint = mouse;           // 更新鼠标点
+              }
+       }
+
+       if (closestCenterIndex == -1)
+       {
+              mousePoint = glm::vec3(-10.0f, -10.0f, -10.0f); // 鼠标点击空白部分时返回-1, -1, -1
+       }
 }

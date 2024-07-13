@@ -11,8 +11,6 @@
  * 3. Position: a 3D array to store the left-bottom of each block
  */
 
-std::vector<Block> frontier;
-int mode;
 int SizeByMode[3] = {3, 5, 10};
 int BoomByMode[3] = {2, 10, 74};
 
@@ -21,9 +19,11 @@ int BoomByMode[3] = {2, 10, 74};
  * mode: 0 for 3*3*3, 1 for 5*5*5, 2 for 10*10*10
  * Index =  i * size * size + j * size + k
  */
-void initFrontier()
+void initFrontier(int mode, std::vector<Block> &frontier)
 {
+
     int size = SizeByMode[mode];
+
     for (int i = 0; i < size; i++)
     {
         for (int j = 0; j < size; j++)
@@ -41,7 +41,7 @@ void initFrontier()
  * 0 stands for unclicked, 1 stands for clicked
  * later we will draw the blocks according to the click status and the boom status
  */
-void createBoom(int mode)
+void createBoom(int mode, std::vector<Block> &frontier)
 {
     int boomCount = BoomByMode[mode];
     srand(time(NULL));
